@@ -1,7 +1,7 @@
 
 scene({
 
-    projectName 'trip',
+    projectName : 'trip',
 
     maxFrame : 25,
 
