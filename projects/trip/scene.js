@@ -1,6 +1,8 @@
 
 scene({
 
+    projectName 'trip',
+
     maxFrame : 25,
 
     viewPort : {
@@ -182,6 +184,7 @@ scene.load(
         };
 
         scene.injectUI(playback);
+        autoGif.injectUI(playback,scene.state.maxFrame);
 
     }
 

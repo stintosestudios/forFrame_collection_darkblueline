@@ -1,6 +1,8 @@
 
 scene({
 
+    projectName : 'wave_sin',
+
     maxFrame : 50,
 
     viewPort : {
@@ -97,6 +99,7 @@ scene.load(
         };
 
         scene.injectUI(playback);
+        autoGif.injectUI(playback,scene.state.maxFrame);
 
     }
 

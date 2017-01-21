@@ -1,6 +1,8 @@
 
 scene({
 
+    projectName : 'crab',
+
     maxFrame : 50,
 
     viewPort : {
@@ -146,6 +148,7 @@ scene.load(
         };
 
         scene.injectUI(playback);
+        autoGif.injectUI(playback,scene.state.maxFrame);
 
     }
 

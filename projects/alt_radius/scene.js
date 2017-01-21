@@ -80,6 +80,8 @@ setCircle = function (pt, circleIndex, circleLen, offset) {
 
 scene({
 
+    projectName : 'alt_radius',
+
     maxFrame : 100,
 
     viewPort : {
@@ -322,6 +324,7 @@ scene.load(
         };
 
         scene.injectUI(playback);
+        autoGif.injectUI(playback,scene.state.maxFrame);
 
     }
 
