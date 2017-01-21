@@ -3,6 +3,8 @@ scene({
 
     maxFrame : 50,
 
+    projectName : 'yin',
+
     viewPort : {
 
         w : 480,
@@ -38,7 +40,7 @@ scene({
                 var bias = Math.abs(.5 - this.percentDone) / .5;
 
                 //pt.radian = Math.PI * 2 * this.percentDone;
-                pt.opacity = 1-bias;
+                pt.opacity = 1 - bias;
 
             },
 
@@ -202,6 +204,7 @@ scene.load(
         };
 
         scene.injectUI(playback);
+        autoGif.injectUI(playback,scene.state.maxFrame);
 
     }
 

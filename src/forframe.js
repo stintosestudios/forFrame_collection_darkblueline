@@ -1,6 +1,6 @@
 /*
- *    forFrame.js
- *    Copyright 2016 by stintose studios (GPL v3)
+ *    forFrame.js ( hacked over for forFrame_tools, possible 2.x )
+ *    Copyright 2016, 2017 by stintose studios (GPL v3)
  *    https://github.com/stintosestudios/forFrame
  *
  */
@@ -9,6 +9,7 @@ var scene = (function () {
 
     var state = {
 
+        projectName : 'untitled',
         frame : 0,
         maxFrame : 50,
         percentDone : 0,
@@ -62,10 +63,12 @@ var scene = (function () {
 
         }
 
-    };
+    },
+
+    plugins = {},
 
     // The Skin Class is used to skin a Part with an image
-    var Skin = function (part, skinOptions) {
+    Skin = function (part, skinOptions) {
 
         var defaults = 'imgIndex:-1;xOffset:0;yOffset:0;sx:0;sy:0;sw:32;sh:32;renderPartBox:0;appendRender:none;'.split(';'),
         i = 0,
@@ -175,6 +178,9 @@ var scene = (function () {
 
         }
 
+        // projectName
+        state.projectName = options.projectName ? options.projectName: 'untitled';
+
         // default to 50 frames if maxFrame is not given
         state.maxFrame = options.maxFrame ? options.maxFrame : 50;
 
@@ -250,221 +256,25 @@ var scene = (function () {
 
     };
 
-    // inject a canvas into the given id
-    api.injectCanvas = function (id) {
+    // making state public
+    api.state = state;
 
-        state.canvas = document.createElement('canvas');
-        state.ctx = state.canvas.getContext('2d');
+    // inject plugins
+    api.injectPlugin = function (plugObj) {
 
-        state.canvas.width = state.viewPort.w;
-        state.canvas.height = state.viewPort.h;
+        if (plugObj.name) {
 
-        state.ctx.fillStyle = 'black';
-        state.ctx.fillRect(0, 0, state.canvas.width, state.canvas.height);
+            // just reference for now
+            plugins[plugObj.name] = plugObj;
 
-        document.getElementById(id).appendChild(state.canvas);
+            api[plugObj.name] = function () {
 
-    };
-
-    // inject a User Interface into the element of the given id
-    api.injectUI = function (playbackObj) {
-
-        var ui = document.createElement('div'),
-        control;
-
-        ui.style.outline = '1px solid #000000';
-        ui.style.width = '640px';
-        ui.style.height = '120px';
-
-        // play/stop button
-        control = document.createElement('input');
-        control.type = 'button';
-        control.value = 'play\/stop';
-        control.style.margin = '10px';
-        control.addEventListener('click', function (e) {
-
-            api.play(playbackObj);
-
-        });
-        ui.appendChild(control);
-
-        // step+ button
-        control = document.createElement('input');
-        control.type = 'button';
-        control.value = 'step+';
-        control.style.margin = '10px';
-        control.addEventListener('click', function (e) {
-
-            // step the current frame forward
-            api.step();
-            api.renderFrame(playbackObj);
-
-        });
-        ui.appendChild(control);
-
-        // step- button
-        control = document.createElement('input');
-        control.type = 'button';
-        control.value = 'step-';
-        control.style.margin = '10px';
-        control.addEventListener('click', function (e) {
-
-            // step the current frame forward
-            api.step(true);
-            api.renderFrame(playbackObj);
-
-        });
-        ui.appendChild(control);
-
-        // make PNG's
-        control = document.createElement('input');
-        control.type = 'button';
-        control.value = 'toPNGCollection';
-        control.style.margin = '10px';
-        control.addEventListener('click', function (e) {
-
-            api.toPNGCollection(playbackObj);
-
-        });
-        ui.appendChild(control);
-
-        // disp div
-        control = document.createElement('div');
-        control.id = "for_frame_ui_disp";
-        control.style.margin = '10px';
-        ui.appendChild(control);
-
-        api.setFrame(0);
-        api.renderFrame(playbackObj);
-
-        document.getElementById(playbackObj.containerId).appendChild(ui);
-
-    };
-
-    // render the current frame
-    api.renderFrame = function (playbackObj) {
-
-        var prop,
-        skin,
-        pt,
-        z = 0,
-        ctx = state.ctx,
-        appendZ,
-        disp;
-
-        if (playbackObj === undefined) {
-            playbackObj = {};
-        }
-
-        appendZ = playbackObj.appendZ === undefined ? Object.keys(state.parts).length - 1 : playbackObj.appendZ;
-
-        // clear canvas.
-        state.ctx.fillStyle = 'black';
-        state.ctx.fillRect(0, 0, state.canvas.width, state.canvas.height);
-
-        // ALERT! a for in loop!? NO!
-        for (prop in state.parts) {
-
-            // append render?
-            if (playbackObj.appendRender && z === appendZ) {
-
-                playbackObj.appendRender.call(state, ctx);
-
-            }
-
-            z += 1;
-
-            pt = state.parts[prop];
-
-            ctx.save();
-            // default to state.opacity
-            ctx.globalAlpha = state.opacity;
-
-            // if part opacity that will override state.opacity
-            if (Number(pt.opacity) >= 0) {
-
-                ctx.globalAlpha = pt.opacity;
-
-            }
-
-            ctx.translate(pt.x + pt.w / 2, pt.y + pt.h / 2);
-            ctx.rotate(pt.radian);
-
-            skin = pt.skin;
-
-            if (Number(skin.imgIndex) > -1) {
-
-                // if we have a skin for the part use the skin
-                ctx.strokeStyle = '#ff0000';
-                ctx.drawImage(
-                    state.img[skin.imgIndex],
-                    skin.sx,
-                    skin.sy,
-                    skin.sw,
-                    skin.sh,
-                    -pt.w / 2 + Number(skin.xOffset),
-                    -pt.h / 2 + Number(skin.yOffset),
-                    pt.w,
-                    pt.h);
-
-                if (skin.renderPartBox) {
-
-                    ctx.strokeRect(-pt.w / 2, -pt.h / 2, pt.w, pt.h);
-
-                }
-
-            }
-
-            if (skin.appendRender != 'none') {
-
-                skin.draw();
-
-            }
-
-            ctx.restore();
+                plugins[plugObj.name].method.call(state, arguments)
+            };
 
         }
 
-        // all parts rendered, so render logo if given
-        if (state.logo) {
-
-            pt = state.logo;
-            skin = state.logo.skin;
-
-            ctx.save();
-            ctx.globalAlpha = state.opacity;
-
-            if (Number(pt.opacity) >= 0) {
-
-                ctx.globalAlpha = pt.opacity;
-
-            }
-
-            ctx.drawImage(
-                state.img[skin.imgIndex],
-                skin.sx,
-                skin.sy,
-                skin.sw,
-                skin.sh,
-                pt.x + Number(skin.xOffset),
-                pt.y + Number(skin.yOffset),
-                pt.w,
-                pt.h);
-
-            ctx.restore();
-
-        }
-
-        disp = document.getElementById('for_frame_ui_disp');
-
-        if (disp) {
-
-            disp.innerHTML = 'frame: ' + state.frame + '\/' + state.maxFrame;
-
-            7
-        }
-
-    };
+    },
 
     // set animation to the given frame.
     api.setFrame = function (frameNum) {
@@ -578,59 +388,7 @@ var scene = (function () {
 
         };
     }
-        ()),
-
-    // convert your animation to a *.png file collection
-    api.toPNGCollection = function (playbackObj) {
-
-        var saveFrames = function () {
-
-            api.setFrame(state.frame);
-            api.renderFrame(playbackObj);
-
-            state.canvas.toBlob(function (blob) {
-
-                saveAs(blob, 'frame_' + state.frame + '.png');
-
-                state.frame += 1;
-                if (state.frame < state.maxFrame) {
-
-                    saveFrames();
-
-                } else {
-
-                    state.frame = 0;
-                    api.setFrame(0);
-                    api.renderFrame(playbackObj);
-                }
-
-            });
-
-        };
-
-        if (playbackObj === undefined) {
-
-            playbackObj = {};
-
-        }
-
-        // test for "saveAs" global as this methods requiers filesaver.js
-        if (saveAs) {
-
-            // set current frame to zerro if it is not all ready
-            state.frame = 0;
-
-            // start saveFrames recursive loop
-            saveFrames();
-
-            // no saveAs
-        } else {
-
-            throw new Error('toPngCollection needs filesaver.js. See the README.');
-
-        }
-
-    };
+        ())
 
     return api;
 
