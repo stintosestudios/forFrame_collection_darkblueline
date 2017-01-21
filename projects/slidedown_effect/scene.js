@@ -3,7 +3,7 @@ scene({
 
     projectName : 'slidedown_effect',
 
-    maxFrame : 50,
+    maxFrame : 100,
 
     viewPort : {
 
@@ -19,7 +19,7 @@ scene({
         (function () {
 
             var box = [],
-            totalBox = 4;
+            totalBox = 5;
             i = 0,
             screenW = 480,
             deltaW = screenW / totalBox;
@@ -40,7 +40,7 @@ scene({
 
             return {
 
-                id : 'box',
+                id : 'sliders',
 
                 w : screenW,
                 h : 360,
@@ -56,20 +56,46 @@ scene({
 
                     box.forEach(function (bx, i) {
 
-                        var d = 250,
-                        a = 1 / totalBox,
-                        b = a * (i+1),
-                        per = self.percentDone / b;
+                        var d,
+                        a,
+                        b,
+                        per;
 
-                        if (self.percentDone > b) {
+                        if (self.percentDone < .33) {
+                            // the distance to go down
+                            d = 250,
+                            // the total percent of the slide down effect over total boxes
+                            a = .3 / totalBox,
+                            // max percent value
+                            b = a * (i + 1),
+                            // set the actual percent that will be used
+                            per = self.percentDone / b;
 
-                            per = 1;
+                            // never go above 1
+                            if (self.percentDone > b) {
+
+                                per = 1;
+
+                            }
+
+                            // set the y value
+                            bx.y = -110 + d * per;
+
+                            return
+
+                        } else {
+
+                            if (self.percentDone < .66) {
+
+                                bx.y = -110 + 250;
+
+                                return
+
+                            }
 
                         }
 
-                        bx.y = -110 + d * per;
-
-                        //bx.y = -110 + (590 * (i+1)) * self.percentDone;
+                        bx.y = -110 + 250 + 400 * ((self.percentDone - .66) / .33);
 
                     });
 
