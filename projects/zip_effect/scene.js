@@ -131,6 +131,7 @@ scene({
                         var pt = skin.part;
 
                         ctx.strokeStyle = '#00ffff';
+                        ctx.lineWidth = 3;
                         //ctx.strokeRect(0, 0, pt.w, pt.h);
 
                         box.forEach(function (bx) {
