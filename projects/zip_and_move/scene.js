@@ -3,7 +3,7 @@ scene({
 
     projectName : 'zip_and_move',
 
-    maxFrame : 100,
+    maxFrame : 75,
 
     viewPort : {
 
@@ -157,14 +157,14 @@ scene({
 
                             //bx.y = -110 + d;
 
-							                            // set the y value
+                            // set the y value
                             bx.y = 370 - d;
 
                             if (String(i / 2).indexOf('.') != -1) {
                                 bx.y = -110 + d;
 
                             }
-							
+
                             return
 
                         }
