@@ -115,13 +115,12 @@ scene({
 
                 forFrame : function (pt) {
 
-                    //pt.x = -pt.w + (this.viewPort.w + pt.w) * this.percentDone;
-
                     var self = this;
 
                     box.forEach(function (bx, i) {
 
-                        var d = 250,
+                        // the distance to go down
+                        var d = 240,
                         a,
                         b,
                         per;
@@ -129,8 +128,7 @@ scene({
                         bx.x = deltaW * i + (deltaW / 2 - 10) + screenW * self.percentDone;
 
                         if (self.percentDone < .33) {
-                            // the distance to go down
-                            d = 250;
+
                             // the total percent of the slide down effect over total boxes
                             a = .3 / totalBox;
                             // max percent value
@@ -146,7 +144,7 @@ scene({
                             }
 
                             // set the y value
-                            bx.y = 390 - d * per;
+                            bx.y = 370 - d * per;
 
                             if (String(i / 2).indexOf('.') != -1) {
                                 bx.y = -110 + d * per;
@@ -157,8 +155,16 @@ scene({
 
                         } else {
 
-                            bx.y = -110 + d;
+                            //bx.y = -110 + d;
 
+							                            // set the y value
+                            bx.y = 370 - d;
+
+                            if (String(i / 2).indexOf('.') != -1) {
+                                bx.y = -110 + d;
+
+                            }
+							
                             return
 
                         }
