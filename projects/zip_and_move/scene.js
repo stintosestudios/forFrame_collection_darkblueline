@@ -39,15 +39,16 @@ scene({
                 appendRender : function (ctx) {
 
                     var x,
+                    dx,
                     y,
                     size = 4;
 
-                    ctx.strokeStyle = 'rgba(0,255,255,.5)';
-                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = 'rgba(0,127,127,1)';
+                    ctx.lineWidth = 6;
 
-                    // horazonals
-                    y = 360 / size;
-                    while (y < 360) {
+                    // hora
+                    y = 0;
+                    while (y < 361) {
 
                         ctx.beginPath();
                         ctx.moveTo(0, y);
@@ -55,6 +56,21 @@ scene({
                         ctx.stroke();
 
                         y += 360 / size;
+
+                    }
+
+                    // vert
+                    x = 0;
+                    while (x < 481) {
+
+                        dx = 480 / size * this.percentDone;
+
+                        ctx.beginPath();
+                        ctx.moveTo(x + dx, 0);
+                        ctx.lineTo(x + dx, 360)
+                        ctx.stroke();
+
+                        x += 480 / size;
 
                     }
 
@@ -158,11 +174,13 @@ scene({
                         var pt = skin.part;
 
                         ctx.strokeStyle = '#00ffff';
+                        ctx.fillStyle = '#000000';
+
                         ctx.lineWidth = 6;
-                        //ctx.strokeRect(0, 0, pt.w, pt.h);
 
                         box.forEach(function (bx) {
 
+                            ctx.fillRect(bx.x, bx.y, bx.w, bx.h);
                             ctx.strokeRect(bx.x, bx.y, bx.w, bx.h);
 
                         });
