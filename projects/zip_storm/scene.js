@@ -3,7 +3,7 @@ scene({
 
     projectName : 'zip_storm',
 
-    maxFrame : 75,
+    maxFrame : 50,
 
     viewPort : {
 
@@ -88,11 +88,11 @@ scene({
 
         },
 
-        // using a closure
+        // main zip
         (function () {
 
             var box = [],
-            totalBox = 8;
+            totalBox = 10;
             i = 0,
             screenW = 480,
             deltaW = screenW / totalBox;
@@ -113,7 +113,7 @@ scene({
 
             return {
 
-                id : 'sliders',
+                id : 'main_zip',
 
                 w : screenW,
                 h : 360,
@@ -135,45 +135,25 @@ scene({
 
                         bx.x = deltaW * i + (deltaW / 2 - 10) + screenW * self.percentDone;
 
-                        if (self.percentDone < .33) {
+                        // the total percent of the slide down effect over total boxes
+                        a = 1 / totalBox;
+                        // max percent value
+                        b = a * (i + 1);
+                        // set the actual percent that will be used
+                        per = self.percentDone / b;
 
-                            // the total percent of the slide down effect over total boxes
-                            a = .3 / totalBox;
-                            // max percent value
-                            b = a * (i + 1);
-                            // set the actual percent that will be used
-                            per = self.percentDone / b;
+                        // never go above 1
+                        if (self.percentDone > b) {
 
-                            // never go above 1
-                            if (self.percentDone > b) {
+                            per = 1;
 
-                                per = 1;
+                        }
 
-                            }
+                        // set the y value
+                        bx.y = 370 - d * per;
 
-                            // set the y value
-                            bx.y = 370 - d * per;
-
-                            if (String(i / 2).indexOf('.') != -1) {
-                                bx.y = -110 + d * per;
-
-                            }
-
-                            return
-
-                        } else {
-
-                            //bx.y = -110 + d;
-
-                            // set the y value
-                            bx.y = 370 - d;
-
-                            if (String(i / 2).indexOf('.') != -1) {
-                                bx.y = -110 + d;
-
-                            }
-
-                            return
+                        if (String(i / 2).indexOf('.') != -1) {
+                            bx.y = -110 + d * per;
 
                         }
 
@@ -187,7 +167,125 @@ scene({
 
                         var pt = skin.part;
 
-                        ctx.strokeStyle = '#00ffff';
+                        ctx.strokeStyle = 'rgba(0,255,255,.5)';
+                        ctx.fillStyle = '#000000';
+
+                        ctx.lineWidth = 6;
+
+                        box.forEach(function (bx) {
+
+                            ctx.fillRect(bx.x, bx.y, bx.w, bx.h);
+                            ctx.strokeRect(bx.x, bx.y, bx.w, bx.h);
+
+                        });
+
+                    }
+
+                }
+
+            };
+
+        }
+            ()),
+
+        // using a closure
+        (function () {
+
+            var box = [],
+            totalBox = 3;
+            i = 0,
+            screenW = 480,
+            deltaW = screenW / totalBox;
+            while (i < totalBox) {
+
+                box.push({
+
+                    x : deltaW * i + (deltaW / 2 - 10),
+                    y : -100,
+                    w : 20,
+                    h : 100
+
+                });
+
+                i += 1;
+
+            }
+
+            return {
+
+                id : 'other_zip',
+
+                w : screenW,
+                h : 360,
+
+                x : 0,
+                y : 0,
+
+                forFrame : function (pt) {
+
+                    var self = this;
+
+                    box.forEach(function (bx, i) {
+
+                        // the distance to go down
+                        var d = 240,
+                        a,
+                        b,
+                        per;
+
+                        //bx.x = deltaW * i + (deltaW / 2 - 10) + screenW * self.percentDone;
+
+                        pt.opacity = 1;
+
+                        bx.x = deltaW * i + (deltaW / 2 - 10)
+                            bx.w = 20;
+
+                        if (self.percentDone <= .5) {
+
+                            // the total percent of the slide down effect over total boxes
+                            a = .5 / totalBox;
+                            // max percent value
+                            b = a * (i + 1);
+                            // set the actual percent that will be used
+                            per = self.percentDone / b;
+
+                            // never go above 1
+                            if (self.percentDone > b) {
+
+                                per = 1;
+
+                            }
+
+                            // set the y value
+                            bx.y = 470 - d * per;
+
+                            if (String(i / 2).indexOf('.') != -1) {
+                                bx.y = -10 + d * per;
+
+                            }
+
+                        } else {
+
+                            bx.w = 20 + 80 * (self.percentDone - .5) / .5;
+
+                            bx.x = deltaW * i + (deltaW / 2 - bx.w / 2);
+                            bx.y = 470 - d;
+
+                            pt.opacity = 1 - 1 * (self.percentDone - .5) / .5;
+
+                        }
+
+                    });
+
+                },
+
+                skin : {
+
+                    appendRender : function (ctx, skin) {
+
+                        var pt = skin.part;
+
+                        ctx.strokeStyle = 'rgba(0,255,255,.5)';
                         ctx.fillStyle = '#000000';
 
                         ctx.lineWidth = 6;
