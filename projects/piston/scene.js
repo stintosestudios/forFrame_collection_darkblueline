@@ -1,7 +1,7 @@
 
 scene({
 
-    projectName : 'zip_storm',
+    projectName : 'piston',
 
     maxFrame : 50,
 
@@ -27,284 +27,83 @@ scene({
 
     // define some parts
     parts : [{
-            id : 'background',
 
-            w : 480,
-            h : 360,
-            x : 0,
-            y : 0,
+            id : 'piston_wheel',
+            w : 200,
+            h : 200,
+            x : 100,
+            y : 100,
+
+            forFrame : function (pt) {},
 
             skin : {
 
-                appendRender : function (ctx) {
+                appendRender : function (ctx, skin) {
 
-                    var x,
-                    dx,
-                    y,
-                    size = 20,
-                    offset = {
+                    var pt = skin.part;
 
-                        x : -480,
-                        y : -360
+                    // the part area
+                    ctx.strokeStyle = '#ff0000';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(0, 0, pt.w, pt.h);
 
-                    };
+                    ctx.strokeStyle = '#00ffff';
+                    ctx.lineWidth = 3;
 
-                    ctx.translate(this.viewPort.w / 2, this.viewPort.h / 2);
-                    ctx.rotate(Math.PI / 4);
-                    ctx.strokeStyle = 'rgba(0,127,127,.4)';
-                    ctx.lineWidth = 6;
+                    // wheel size based on part size
+                    ctx.beginPath();
+                    ctx.arc(pt.w / 2, pt.h / 2, pt.w / 2 * 0.75, 0, Math.PI * 2);
+                    ctx.stroke();
 
-                    // hora
-                    y = offset.y;
-                    while (y < 361 * 2 + offset.y) {
+                }
 
-                        ctx.beginPath();
-                        ctx.moveTo(0 + offset.x, y);
-                        ctx.lineTo(480 * 2 + offset.x, y)
-                        ctx.stroke();
+            }
 
-                        y += 360 * 2 / size;
+        }, {
 
-                    }
+            id : 'piston_wheel_link',
 
-                    // vert
-                    x = offset.x;
-                    while (x < 481 * 2 + offset.x) {
+            w : 32,
+            h : 32,
 
-                        dx = 480 * 2 / size * this.percentDone;
+            forFrame : function (pt) {
 
-                        ctx.beginPath();
-                        ctx.moveTo(x + dx, 0 + offset.y);
-                        ctx.lineTo(x + dx, 360 * 2 + offset.y)
-                        ctx.stroke();
+                var ptWheel = this.parts['piston_wheel'],
+                radian = Math.PI * 2 * this.percentDone,
+                cx = ptWheel.x + ptWheel.w / 2 - pt.w / 2,
+                cy = ptWheel.y + ptWheel.h / 2 - pt.h / 2;
+				
+				//pt.radian = radian;
+				
 
-                        x += 480 * 2 / size;
+                pt.x = cx + Math.cos(radian) * 25;
+                pt.y = cy + Math.sin(radian) * 25;
 
-                    }
+            },
+
+            skin : {
+
+                appendRender : function (ctx, skin) {
+
+                    var pt = skin.part;
+
+                    // the part area
+                    ctx.strokeStyle = '#ff0000';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(0, 0, pt.w, pt.h);
+
+                    ctx.strokeStyle = '#00ffff';
+                    ctx.lineWidth = 3;
+
+                    ctx.beginPath();
+                    ctx.arc(pt.w / 2, pt.h / 2, pt.w / 2, 0, Math.PI * 2);
+                    ctx.stroke();
 
                 }
 
             }
 
         },
-
-        // main zip
-        (function () {
-
-            var box = [],
-            totalBox = 10;
-            i = 0,
-            screenW = 480,
-            deltaW = screenW / totalBox;
-            while (i < totalBox) {
-
-                box.push({
-
-                    x : deltaW * i + (deltaW / 2 - 10),
-                    y : -100,
-                    w : 20,
-                    h : 100
-
-                });
-
-                i += 1;
-
-            }
-
-            return {
-
-                id : 'main_zip',
-
-                w : screenW,
-                h : 360,
-
-                x : 0,
-                y : 0,
-
-                forFrame : function (pt) {
-
-                    var self = this;
-
-                    box.forEach(function (bx, i) {
-
-                        // the distance to go down
-                        var d = 240,
-                        a,
-                        b,
-                        per;
-
-                        bx.x = deltaW * i + (deltaW / 2 - 10) + screenW * self.percentDone;
-
-                        // the total percent of the slide down effect over total boxes
-                        a = 1 / totalBox;
-                        // max percent value
-                        b = a * (i + 1);
-                        // set the actual percent that will be used
-                        per = self.percentDone / b;
-
-                        // never go above 1
-                        if (self.percentDone > b) {
-
-                            per = 1;
-
-                        }
-
-                        // set the y value
-                        bx.y = 370 - d * per;
-
-                        if (String(i / 2).indexOf('.') != -1) {
-                            bx.y = -110 + d * per;
-
-                        }
-
-                    });
-
-                },
-
-                skin : {
-
-                    appendRender : function (ctx, skin) {
-
-                        var pt = skin.part;
-
-                        ctx.strokeStyle = 'rgba(0,255,255,.5)';
-                        ctx.fillStyle = '#000000';
-
-                        ctx.lineWidth = 6;
-
-                        box.forEach(function (bx) {
-
-                            ctx.fillRect(bx.x, bx.y, bx.w, bx.h);
-                            ctx.strokeRect(bx.x, bx.y, bx.w, bx.h);
-
-                        });
-
-                    }
-
-                }
-
-            };
-
-        }
-            ()),
-
-        // using a closure
-        (function () {
-
-            var box = [],
-            totalBox = 3;
-            i = 0,
-            screenW = 480,
-            deltaW = screenW / totalBox;
-            while (i < totalBox) {
-
-                box.push({
-
-                    x : deltaW * i + (deltaW / 2 - 10),
-                    y : -100,
-                    w : 20,
-                    h : 100
-
-                });
-
-                i += 1;
-
-            }
-
-            return {
-
-                id : 'other_zip',
-
-                w : screenW,
-                h : 360,
-
-                x : 0,
-                y : 0,
-
-                forFrame : function (pt) {
-
-                    var self = this;
-
-                    box.forEach(function (bx, i) {
-
-                        // the distance to go down
-                        var d = 240,
-                        a,
-                        b,
-                        per;
-
-                        //bx.x = deltaW * i + (deltaW / 2 - 10) + screenW * self.percentDone;
-
-                        pt.opacity = 1;
-
-                        bx.x = deltaW * i + (deltaW / 2 - 10)
-                            bx.w = 20;
-
-                        if (self.percentDone <= .5) {
-
-                            // the total percent of the slide down effect over total boxes
-                            a = .5 / totalBox;
-                            // max percent value
-                            b = a * (i + 1);
-                            // set the actual percent that will be used
-                            per = self.percentDone / b;
-
-                            // never go above 1
-                            if (self.percentDone > b) {
-
-                                per = 1;
-
-                            }
-
-                            // set the y value
-                            bx.y = 470 - d * per;
-
-                            if (String(i / 2).indexOf('.') != -1) {
-                                bx.y = -10 + d * per;
-
-                            }
-
-                        } else {
-
-                            bx.w = 20 + 80 * (self.percentDone - .5) / .5;
-
-                            bx.x = deltaW * i + (deltaW / 2 - bx.w / 2);
-                            bx.y = 470 - d;
-
-                            pt.opacity = 1 - 1 * (self.percentDone - .5) / .5;
-
-                        }
-
-                    });
-
-                },
-
-                skin : {
-
-                    appendRender : function (ctx, skin) {
-
-                        var pt = skin.part;
-
-                        ctx.strokeStyle = 'rgba(0,255,255,.5)';
-                        ctx.fillStyle = '#000000';
-
-                        ctx.lineWidth = 6;
-
-                        box.forEach(function (bx) {
-
-                            ctx.fillRect(bx.x, bx.y, bx.w, bx.h);
-                            ctx.strokeRect(bx.x, bx.y, bx.w, bx.h);
-
-                        });
-
-                    }
-
-                }
-
-            };
-
-        }
-            ())
 
     ],
 
