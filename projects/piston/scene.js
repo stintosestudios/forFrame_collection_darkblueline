@@ -47,6 +47,12 @@ scene({
                     ctx.lineWidth = 1;
                     ctx.strokeRect(0, 0, pt.w, pt.h);
 
+                    ctx.beginPath();
+                    ctx.moveTo(0, 100);
+                    ctx.lineTo(480, 100);
+                    ctx.closePath();
+                    ctx.stroke();
+
                     ctx.strokeStyle = '#00ffff';
                     ctx.lineWidth = 3;
 
@@ -80,8 +86,8 @@ scene({
 
                 };
 
-                pt.x = cx + Math.cos(radian) * 25;
-                pt.y = cy + Math.sin(radian) * 25;
+                pt.x = cx + Math.cos(radian) * 50;
+                pt.y = cy + Math.sin(radian) * 50;
 
             },
 
@@ -111,51 +117,17 @@ scene({
 
             id : 'piston_shaft',
 
-            w : 64,
+            w : 16,
             h : 16,
             x : 400,
             y : 200,
 
-            skin : {
-
-                appendRender : function (ctx, skin) {
-
-                    var pt = skin.part;
-
-                    // the part area
-                    ctx.strokeStyle = '#ff0000';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(0, 0, pt.w, pt.h);
-
-                    ctx.strokeStyle = '#00ffff';
-                    ctx.lineWidth = 3;
-
-                    ctx.strokeRect(0, 0, pt.w, pt.h);
-
-                }
-
-            }
-        }, {
-
-            id : 'piston_bar',
-
-            w : 300,
-            h : 16,
-
             forFrame : function (pt) {
 
-                // wheel link
-                var ptWL = this.parts['piston_wheel_link'],
-                ptSH = this.parts['piston_shaft'],
-                ptWheel = this.parts['piston_wheel'],
-                //cx = ptWL.x + ptWL.w / 2 - pt.h / 2,
-                //cy = ptWL.y + ptWL.h / 2 - pt.h / 2;
-                cx = ptWL.x + ptWL.w / 2,
-                cy = ptWL.y + ptWL.h / 2;
+                var bias = Math.abs(.5 - this.percentDone) / .5;
 
-                pt.radian = Math.atan2(cy - (ptSH.y+ptSH.h/2), cx - (ptSH.x + ptSH.w/2));
-                pt.x = cx;
-                pt.y = cy;
+                pt.x = 400 - 100 * (1 - bias);
+                pt.y = 200 - pt.h / 2;
 
             },
 
@@ -178,8 +150,91 @@ scene({
                 }
 
             }
+        },
 
+        (function () {
+
+            var theRadian = 0;
+
+            return {
+
+                id : 'piston_bar',
+
+                w : 220,
+                h : 16,
+
+                forFrame : function (pt) {
+
+                    // wheel link
+                    var ptWL = this.parts['piston_wheel_link'],
+                    ptSH = this.parts['piston_shaft'],
+                    ptWheel = this.parts['piston_wheel'],
+                    per = this.percentDone,
+                    bias = 1 - Math.abs(.5 - this.percentDone) / .5,
+                    cx,
+                    cy;
+                    //cx = ptWL.x + ptWL.w / 2 - pt.h / 2,
+                    //cy = ptWL.y + ptWL.h / 2 - pt.h / 2;
+                    //cx = ptWL.x + ptWL.w / 2,
+                    //cy = ptWL.y + ptWL.h / 2 - pt.h / 2;
+
+                    //pt.radian = Math.atan2((cy-4) - (ptSH.y + ptSH.h / 2), cx - (ptSH.x + ptSH.w / 2));
+                    //pt.radian = Math.atan2( - (ptSH.y-4), cx - ptSH.x);
+
+                    // from wheel link
+                    //cx = ptWL.x + ptWL.w / 2;
+                    //cy = ptWL.y + ptWL.h / 2 - pt.h / 2;
+                    cx = ptWL.x + ptWL.w / 2;
+                    cy = ptWL.y + ptWL.h / 2;
+
+					/*
+                    theRadian = Math.atan2(
+                            cy - ptSH.y - ptSH.h / 2,
+                            cx - ptSH.x + ptSH.w / 2);
+*/
+					
+                    theRadian = Math.atan2(
+                            cy - 100 - 100,
+                            cx - ptSH.x + ptSH.w / 2);
+							
+                    /*
+                    theRadian = Math.atan2(
+                    ptWL.y - ptSH.y,
+                    ptWL.x - ptSH.x)
+                     */
+                    pt.x = cx;
+                    pt.y = cy;
+
+                },
+
+                skin : {
+
+                    appendRender : function (ctx, skin) {
+
+                        var pt = skin.part;
+
+                        // the part area
+                        ctx.strokeStyle = '#ff0000';
+                        ctx.lineWidth = 1;
+                        //ctx.strokeRect(0, 0, pt.w, pt.h);
+
+
+                        ctx.translate(0, -pt.h / 2);
+                        ctx.rotate(theRadian - Math.PI);
+
+                        //
+                        ctx.strokeStyle = '#00ffff';
+                        ctx.lineWidth = 3;
+
+                        ctx.strokeRect(0, 0, pt.w, pt.h);
+
+                    }
+
+                }
+
+            };
         }
+            ())
 
     ],
 
