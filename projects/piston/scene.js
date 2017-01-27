@@ -29,10 +29,10 @@ scene({
     parts : [{
 
             id : 'piston_wheel',
-            w : 250,
-            h : 250,
-            x : 20,
-            y : 45,
+            w : 280,
+            h : 280,
+            x : 10,
+            y : 180 - 140,
 
             forFrame : function (pt) {},
 
@@ -41,17 +41,6 @@ scene({
                 appendRender : function (ctx, skin) {
 
                     var pt = skin.part;
-
-                    // the part area
-                    ctx.strokeStyle = '#ff0000';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(0, 0, pt.w, pt.h);
-
-                    ctx.beginPath();
-                    ctx.moveTo(0, 100);
-                    ctx.lineTo(480, 100);
-                    ctx.closePath();
-                    ctx.stroke();
 
                     ctx.strokeStyle = '#00ffff';
                     ctx.lineWidth = 3;
@@ -96,11 +85,6 @@ scene({
                 appendRender : function (ctx, skin) {
 
                     var pt = skin.part;
-
-                    // the part area
-                    ctx.strokeStyle = '#ff0000';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(0, 0, pt.w, pt.h);
 
                     ctx.strokeStyle = '#00ffff';
                     ctx.lineWidth = 3;
@@ -147,11 +131,6 @@ scene({
 
                     var pt = skin.part;
 
-                    // the part area
-                    ctx.strokeStyle = '#ff0000';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(0, 0, pt.w, pt.h);
-
                     ctx.strokeStyle = '#00ffff';
                     ctx.lineWidth = 3;
 
@@ -197,16 +176,9 @@ scene({
 
                         var pt = skin.part;
 
-                        // the part area
-                        ctx.strokeStyle = '#ff0000';
-                        ctx.lineWidth = 1;
-                        //ctx.strokeRect(0, 0, pt.w, pt.h);
-
-
                         ctx.translate(0, -pt.h / 2);
                         ctx.rotate(theRadian - Math.PI);
 
-                        //
                         ctx.strokeStyle = '#00ffff';
                         ctx.lineWidth = 3;
 
