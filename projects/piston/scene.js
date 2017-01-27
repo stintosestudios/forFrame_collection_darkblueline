@@ -31,8 +31,8 @@ scene({
             id : 'piston_wheel',
             w : 200,
             h : 200,
-            x : 25,
-            y : 100,
+            x : 45,
+            y : 45,
 
             forFrame : function (pt) {},
 
@@ -124,11 +124,16 @@ scene({
 
             forFrame : function (pt) {
 
-                var bias = Math.abs(.5 - this.percentDone) / .5;
+                var bias = Math.abs(.5 - this.percentDone) / .5,
+
+                ptWheel = this.parts['piston_wheel'],
+                ptBar = this.parts['piston_bar'];
 
                 //pt.x = 400 - 100 * (1 - bias);
-                pt.x = 350 - 50 * Math.cos(Math.PI * bias);
-                pt.y = 200 - pt.h / 2;
+                //pt.x = 350 - 50 * Math.cos(Math.PI * bias);
+                pt.x = ptBar.w + ptWheel.w / 2  + ptWheel.x - 50 * Math.cos(Math.PI * bias);
+
+                pt.y = ptWheel.y + ptWheel.h / 2 - pt.h / 2;
 
             },
 
@@ -170,39 +175,13 @@ scene({
                     var ptWL = this.parts['piston_wheel_link'],
                     ptSH = this.parts['piston_shaft'],
                     ptWheel = this.parts['piston_wheel'],
-                    per = this.percentDone,
-                    bias = 1 - Math.abs(.5 - this.percentDone) / .5,
-                    cx,
-                    cy;
-                    //cx = ptWL.x + ptWL.w / 2 - pt.h / 2,
-                    //cy = ptWL.y + ptWL.h / 2 - pt.h / 2;
-                    //cx = ptWL.x + ptWL.w / 2,
-                    //cy = ptWL.y + ptWL.h / 2 - pt.h / 2;
-
-                    //pt.radian = Math.atan2((cy-4) - (ptSH.y + ptSH.h / 2), cx - (ptSH.x + ptSH.w / 2));
-                    //pt.radian = Math.atan2( - (ptSH.y-4), cx - ptSH.x);
-
-                    // from wheel link
-                    //cx = ptWL.x + ptWL.w / 2;
-                    //cy = ptWL.y + ptWL.h / 2 - pt.h / 2;
-                    cx = ptWL.x + ptWL.w / 2;
+                    cx = ptWL.x + ptWL.w / 2,
                     cy = ptWL.y + ptWL.h / 2;
 
-                    /*
                     theRadian = Math.atan2(
-                    cy - ptSH.y - ptSH.h / 2,
-                    cx - ptSH.x + ptSH.w / 2);
-                     */
-
-                    theRadian = Math.atan2(
-                            cy - 100 - 100,
+                            cy - ptWheel.y - ptWheel.h / 2,
                             cx - ptSH.x + ptSH.w / 2);
 
-                    /*
-                    theRadian = Math.atan2(
-                    ptWL.y - ptSH.y,
-                    ptWL.x - ptSH.x)
-                     */
                     pt.x = cx;
                     pt.y = cy;
 
