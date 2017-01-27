@@ -117,8 +117,8 @@ scene({
 
             id : 'piston_shaft',
 
-            w : 16,
-            h : 16,
+            w : 64,
+            h : 32,
             x : 400,
             y : 200,
 
@@ -126,7 +126,8 @@ scene({
 
                 var bias = Math.abs(.5 - this.percentDone) / .5;
 
-                pt.x = 400 - 100 * (1 - bias);
+                //pt.x = 400 - 100 * (1 - bias);
+                pt.x = 350 - 50 * Math.cos(Math.PI * bias);
                 pt.y = 200 - pt.h / 2;
 
             },
@@ -187,16 +188,16 @@ scene({
                     cx = ptWL.x + ptWL.w / 2;
                     cy = ptWL.y + ptWL.h / 2;
 
-					/*
+                    /*
                     theRadian = Math.atan2(
-                            cy - ptSH.y - ptSH.h / 2,
-                            cx - ptSH.x + ptSH.w / 2);
-*/
-					
+                    cy - ptSH.y - ptSH.h / 2,
+                    cx - ptSH.x + ptSH.w / 2);
+                     */
+
                     theRadian = Math.atan2(
                             cy - 100 - 100,
                             cx - ptSH.x + ptSH.w / 2);
-							
+
                     /*
                     theRadian = Math.atan2(
                     ptWL.y - ptSH.y,
