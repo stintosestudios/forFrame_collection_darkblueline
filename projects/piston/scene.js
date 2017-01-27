@@ -29,9 +29,9 @@ scene({
     parts : [{
 
             id : 'piston_wheel',
-            w : 200,
-            h : 200,
-            x : 45,
+            w : 250,
+            h : 250,
+            x : 20,
             y : 45,
 
             forFrame : function (pt) {},
@@ -76,18 +76,18 @@ scene({
 
                 var ptWheel = this.parts['piston_wheel'],
                 radian = Math.PI * 2 * this.percentDone,
-                cx = ptWheel.x + ptWheel.w / 2 - pt.w / 2,
+                cx,
+                cy,
+                linkRadius = ptWheel.w / 7;
+
+                pt.w = ptWheel.w / 4;
+                pt.h = ptWheel.w / 4;
+
+                cx = ptWheel.x + ptWheel.w / 2 - pt.w / 2;
                 cy = ptWheel.y + ptWheel.h / 2 - pt.h / 2;
 
-                //  additional data that is to be shared with other parts
-                pt.local = {
-
-                    radian : radian
-
-                };
-
-                pt.x = cx + Math.cos(radian) * 50;
-                pt.y = cy + Math.sin(radian) * 50;
+                pt.x = cx + Math.cos(radian) * linkRadius;
+                pt.y = cy + Math.sin(radian) * linkRadius;
 
             },
 
@@ -113,7 +113,7 @@ scene({
 
             }
 
-        }, {
+        }, , {
 
             id : 'piston_shaft',
 
@@ -127,11 +127,15 @@ scene({
                 var bias = Math.abs(.5 - this.percentDone) / .5,
 
                 ptWheel = this.parts['piston_wheel'],
-                ptBar = this.parts['piston_bar'];
+                ptBar = this.parts['piston_bar'],
+
+                linkRadius = ptWheel.w / 7;
+
+                ptBar.w = ptWheel.w * 0.75;
 
                 //pt.x = 400 - 100 * (1 - bias);
                 //pt.x = 350 - 50 * Math.cos(Math.PI * bias);
-                pt.x = ptBar.w + ptWheel.w / 2  + ptWheel.x - 50 * Math.cos(Math.PI * bias);
+                pt.x = ptBar.w + ptWheel.w / 2 + ptWheel.x - linkRadius * Math.cos(Math.PI * bias);
 
                 pt.y = ptWheel.y + ptWheel.h / 2 - pt.h / 2;
 
@@ -166,7 +170,7 @@ scene({
 
                 id : 'piston_bar',
 
-                w : 220,
+                w : 150,
                 h : 16,
 
                 forFrame : function (pt) {
