@@ -60,7 +60,8 @@ scene({
                     pt.w = size;
                     pt.h = size;
 
-                    pt.x = this.viewPort.w / 2 - pt.w / 2 - bias * (64 / len * bxIndex);
+                    //pt.x = this.viewPort.w / 2 - pt.w / 2 - bias * (64 / len * bxIndex);
+                    pt.x = this.viewPort.w / 2 - pt.w / 2 + (128 / len * bxIndex) - bias * (256 / len * bxIndex);
                     pt.y = this.viewPort.h - deltaY;
 
                 },
@@ -72,6 +73,7 @@ scene({
                         var pt = skin.part;
 
                         ctx.strokeStyle = '#00ffff';
+                        ctx.lineWidth = 3;
                         ctx.strokeRect(0, 0, pt.w, pt.h);
 
                     }
