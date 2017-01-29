@@ -60,7 +60,6 @@ scene({
                     pt.w = size;
                     pt.h = size;
 
-                    //pt.x = this.viewPort.w / 2 - pt.w / 2 - bias * (64 / len * bxIndex);
                     pt.x = this.viewPort.w / 2 - pt.w / 2 + (128 / len * bxIndex) - bias * (256 / len * bxIndex);
                     pt.y = this.viewPort.h - deltaY;
 
@@ -84,7 +83,7 @@ scene({
 
             i += 1;
 
-        }
+        };
 
         return theParts;
 
