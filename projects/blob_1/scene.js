@@ -54,8 +54,10 @@ blob2d = function (method) {
 
                     method.call(this, pt, state);
 
-                    pt.x = state.x * (state.pxSize + state.space) + state.offset.x;
-                    pt.y = state.y * (state.pxSize + state.space) + state.offset.y;
+                    pt.w = state.pxSize;
+                    pt.h = state.pxSize;
+                    pt.x = (state.x - 1) * (state.pxSize + state.space) + state.offset.x;
+                    pt.y = (state.y - 1) * (state.pxSize + state.space) + state.offset.y;
 
                 },
                 skin : {
@@ -88,7 +90,7 @@ scene({
 
     projectName : 'blob_1',
 
-    maxFrame : 10,
+    maxFrame : 50,
 
     viewPort : {
 
@@ -112,12 +114,19 @@ scene({
 
     parts : blob2d(function (pt, s) {
 
-        //s.offset.x = 5 * s.bias * s.px / 10 + 100 * s.bias;
-        console.log(s.px / 100);
-        s.pxSize = 8;
-        s.space = 0;
-        s.offset.x = this.viewPort.w / 2 - s.size * s.pxSize / 2;
-        s.offset.y = s.px / (s.size * 2) * s.size * s.bias - (s.size + 1) * s.pxSize / 2 + this.viewPort.h / 2 - (s.size + 1) * s.pxSize / 2 * s.bias;
+        s.pxSize = 15;
+        s.space = 0,
+        cx = this.viewPort.w / 2 - (s.size - 1) / 2 * s.pxSize,
+        cy = this.viewPort.h / 2 - (s.size - 1) / 2 * s.pxSize,
+		deltaY = s.px / (s.size * 2) * s.size * s.bias;
+		
+        //s.offset.x = this.viewPort.w / 2 - s.size * s.pxSize / 2;
+        //s.offset.x = 0 + s.x * this.viewPort.w / (s.size * 1.4) * s.bias;
+        //s.offset.y = s.px / (s.size * 2) * s.size * s.bias - (s.size + 1) * s.pxSize / 2 + this.viewPort.h / 2 - (s.size + 1) * s.pxSize / 2 * s.bias;
+
+        s.offset.x = cx;
+        s.offset.y = cy + deltaY - (s.size / 4 * s.pxSize * s.bias);// - (s.size-2) / 2 * s.pxSize * s.bias;
+
         pt.opacity = 1 - s.d / (s.size / 2);
 
     }),
