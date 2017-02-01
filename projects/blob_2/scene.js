@@ -115,7 +115,7 @@ scene({
     parts : blob2d(function (pt, s) {
 
         s.pxSize = 12;
-        s.space = 10,
+        s.space = 10;
         cx = this.viewPort.w / 2 - (s.size - 1) / 2 * (s.pxSize+s.space),
         cy = this.viewPort.h / 2 - (s.size - 1) / 2 * (s.pxSize+s.space),
         radian = s.px / (s.size * 2) * Math.PI/2 * s.bias;
