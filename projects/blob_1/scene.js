@@ -39,8 +39,8 @@ blob2d = function (method) {
                 id : 'blobpx_' + px,
                 w : state.pxSize,
                 h : state.pxSize,
-                x : x * (state.pxSize + state.space) + state.offset.x,
-                y : y * (state.pxSize + state.space) + state.offset.y,
+                //x : x * (state.pxSize + state.space) + state.offset.x,
+                //y : y * (state.pxSize + state.space) + state.offset.y,
 
                 forFrame : function (pt) {
 
@@ -52,7 +52,10 @@ blob2d = function (method) {
                     state.y = Math.floor(state.px / state.size);
                     state.d = distance(state.x, state.y, state.cx, state.cy);
 
-                    method.call(this,pt,state);
+                    method.call(this, pt, state);
+
+                    pt.x = state.x * (state.pxSize + state.space) + state.offset.x;
+                    pt.y = state.y * (state.pxSize + state.space) + state.offset.y;
 
                 },
                 skin : {
@@ -85,7 +88,7 @@ scene({
 
     projectName : 'blob_1',
 
-    maxFrame : 75,
+    maxFrame : 10,
 
     viewPort : {
 
@@ -107,18 +110,20 @@ scene({
         }
     },
 
-    parts : blob2d(function (pt,s) {
+    parts : blob2d(function (pt, s) {
 
-        pt.x = s.x * (s.pxSize + s.space) + this.viewPort.w / 2 - s.size * s.pxSize / 2;
-        pt.y = s.y * (s.pxSize + s.space) + this.viewPort.h / 2 - s.size * s.pxSize / 2;
+        //s.offset.x = 5 * s.bias * s.px / 10 + 100 * s.bias;
+        console.log(s.px / 100);
+        s.pxSize = 8;
+        s.space = 0;
+        s.offset.x = this.viewPort.w / 2 - s.size * s.pxSize / 2;
+        s.offset.y = s.px / (s.size * 2) * s.size * s.bias - (s.size + 1) * s.pxSize / 2 + this.viewPort.h / 2 - (s.size + 1) * s.pxSize / 2 * s.bias;
         pt.opacity = 1 - s.d / (s.size / 2);
 
     }),
 
     // define the forFrame movement
-    forFrame : function () {
-
-    }
+    forFrame : function () {}
 
 });
 
