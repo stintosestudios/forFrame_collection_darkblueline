@@ -1,9 +1,15 @@
 
-var blob2d = function () {
+var distance = function (x1, y1, x2, y2) {
+
+    return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+
+},
+
+blob2d = function () {
 
     var parts = [];
 
-    var size = 8,
+    var size = 16,
     pxSize = 8,
     space = 1,
     offset = {
@@ -22,7 +28,7 @@ var blob2d = function () {
         x = px % size;
         y = Math.floor(px / size);
 
-        if (Math.sqrt(Math.pow(cx - x, 2) + Math.pow(cy - y, 2)) < (size-1) / 2) {
+        if (distance(x, y, cx, cy) < (size - 1) / 2) {
 
             parts.push({
 
@@ -31,7 +37,21 @@ var blob2d = function () {
                 h : pxSize,
                 x : x * (pxSize + space) + offset.x,
                 y : y * (pxSize + space) + offset.y,
-                forFrame : function (pt) {},
+                forFrame : function (pt) {
+
+                    var px = pt.id.split('_')[1],
+
+                    bias = 1 - Math.abs(.5 - this.percentDone) / .5,
+                    pxSize = 20 - 8 * bias,
+                    x = px % size,
+                    y = Math.floor(px / size),
+                    d = distance(x, y, cx, cy);
+
+                    pt.x = x * (pxSize + space) + this.viewPort.w / 2 - size * pxSize / 2;
+                    pt.y = y * (pxSize + space) + this.viewPort.h / 2 - size * pxSize / 2;
+                    pt.opacity = 1 - d / (size / 2);
+
+                },
                 skin : {
 
                     appendRender : function (ctx, skin) {
